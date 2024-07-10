@@ -17,7 +17,7 @@ export default function Header() {
           />
         </Link>
         <div className="flex items-center space-x-4">
-          <Link href="/" className="btn-primary">
+          <Link to="/" className="btn-primary">
             <img src={HomeIcon} alt="Home" />
             Home
           </Link>
