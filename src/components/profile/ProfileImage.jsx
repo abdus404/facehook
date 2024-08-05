@@ -44,13 +44,25 @@ export default function ProfileImage() {
     }
   };
 
+  // Function to create a placeholder with initials
+  const getInitials = (firstName, lastName) => {
+    const firstInitial = firstName ? firstName.charAt(0).toUpperCase() : "";
+    return `${firstInitial}`;
+  };
+
   return (
     <div className="relative mb-8 max-h-[180px] max-w-[180px] rounded-full lg:mb-11 lg:max-h-[218px] lg:max-w-[218px]">
-      <img
-        className="max-w-full rounded-full"
-        src={`${import.meta.env.VITE_SERVER_BASE_URL}/${state?.user?.avatar}`}
-        alt={state?.user?.firstName}
-      />
+      {state?.user?.avatar ? (
+        <img
+          className="max-w-full rounded-full"
+          src={`${import.meta.env.VITE_SERVER_BASE_URL}/${state?.user?.avatar}`}
+          alt={state?.user?.firstName}
+        />
+      ) : (
+        <div className="h-8 w-8 lg:h-11 lg:w-11 flex items-center justify-center bg-gray-600 text-white rounded-full text-sm lg:text-base">
+          {getInitials(state?.user?.firstName)}
+        </div>
+      )}
       <form>
         <button
           className="flex-center absolute bottom-4 right-4 h-7 w-7 rounded-full bg-black/50 hover:bg-black/80"

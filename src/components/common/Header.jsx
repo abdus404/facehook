@@ -12,6 +12,12 @@ export default function Header() {
 
   const user = state?.user ?? auth?.user;
 
+  // Function to create a placeholder with initials
+  const getInitials = (firstName, lastName) => {
+    const firstInitial = firstName ? firstName.charAt(0).toUpperCase() : "";
+    return `${firstInitial}`;
+  };
+
   return (
     <nav className="sticky top-0 z-50 border-b border-[#3F3F3F] bg-[#1E1F24] py-4">
       <div className="container flex flex-col items-center justify-between gap-6 sm:flex-row">
@@ -34,11 +40,17 @@ export default function Header() {
             <span className="text-lg font-medium lg:text-xl">
               {user?.firstName} {""} {user?.lastName}
             </span>
-            <img
-              className="max-h-[32px] max-w-[32px] lg:max-h-[44px] lg:max-w-[44px] rounded-full"
-              src={`${import.meta.env.VITE_SERVER_BASE_URL}/${user.avatar}`}
-              alt="avatar"
-            />
+            {user.avatar ? (
+              <img
+                className="h-8 w-8 lg:h-11 lg:w-11 rounded-full"
+                src={`${import.meta.env.VITE_SERVER_BASE_URL}/${user.avatar}`}
+                alt={user?.firstName}
+              />
+            ) : (
+              <div className="h-8 w-8 lg:h-11 lg:w-11 flex items-center justify-center bg-gray-600 text-white rounded-full text-sm lg:text-base">
+                {getInitials(user?.firstName)}
+              </div>
+            )}
           </Link>
         </div>
       </div>
