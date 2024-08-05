@@ -11,7 +11,7 @@ export default function PostCard({ post }) {
       {/* post body */}
       <PostBody poster={post?.image} content={post?.content} />
       {/* post actions */}
-      <PostAction postID={post?.id} commentCount={post?.comment?.length} />
+      <PostAction postID={post?.id} commentCount={post?.comments?.length} />
       {/* comment section */}
       <PostComment post={post} />
     </article>
