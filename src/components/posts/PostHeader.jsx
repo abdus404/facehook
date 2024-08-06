@@ -1,19 +1,49 @@
 import { useState } from "react";
+import { actions } from "../../actions";
+
 import ThreeDotsIcon from "../../assets/icons/3dots.svg";
 import DeleteIcon from "../../assets/icons/delete.svg";
 import EditIcon from "../../assets/icons/edit.svg";
 import TimeIcon from "../../assets/icons/time.svg";
+
+import useAuth from "../../hooks/useAuth";
 import { useAvatar } from "../../hooks/useAvatar";
+import useAxios from "../../hooks/useAxios";
+import { usePost } from "../../hooks/usePost";
 import { getDateDifferenceFromNow } from "../../utils";
 
 export default function PostHeader({ post }) {
   const { avatarURL } = useAvatar(post);
+  const { auth } = useAuth();
+  const { api } = useAxios();
+  const { dispatch } = usePost();
 
   const [showAction, setShowAction] = useState(false);
 
-  function toggleAction() {
-    setShowAction(!showAction);
-  }
+  const isMe = post?.author?.id == auth?.user?.id;
+
+  const handleDeletePost = async () => {
+    dispatch({ type: actions.post.DATA_FETCHING });
+
+    try {
+      const response = await api.delete(
+        `${import.meta.env.VITE_SERVER_BASE_URL}/posts/${post.id}`
+      );
+
+      if (response.status === 200) {
+        dispatch({
+          type: actions.post.POST_DELETED,
+          data: post.id,
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      dispatch({
+        type: actions.post.DATA_FETCH_ERROR,
+        error: response.error,
+      });
+    }
+  };
 
   return (
     <header className="flex items-center justify-between gap-4">
@@ -37,9 +67,11 @@ export default function PostHeader({ post }) {
       {/* author info ends */}
       {/* action dot */}
       <div className="relative">
-        <button onClick={toggleAction}>
-          <img src={ThreeDotsIcon} alt="3dots of Action" />
-        </button>
+        {isMe && (
+          <button onClick={() => setShowAction(!showAction)}>
+            <img src={ThreeDotsIcon} alt="3dots of Action" />
+          </button>
+        )}
         {/* Action Menus Popup */}
         {showAction && (
           <div className="action-modal-container">
@@ -47,7 +79,10 @@ export default function PostHeader({ post }) {
               <img src={EditIcon} alt="Edit" />
               Edit
             </button>
-            <button className="action-menu-item hover:text-red-500">
+            <button
+              className="action-menu-item hover:text-red-500"
+              onClick={handleDeletePost}
+            >
               <img src={DeleteIcon} alt="Delete" />
               Delete
             </button>

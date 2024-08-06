@@ -17,7 +17,7 @@ export default function PostAction({ post, commentCount }) {
         `${import.meta.env.VITE_SERVER_BASE_URL}/posts/${post.id}/like`
       );
       if (response.status === 200) {
-        setLiked(true);
+        setLiked(!liked);
       }
     } catch (error) {
       console.error(error);
@@ -37,7 +37,7 @@ export default function PostAction({ post, commentCount }) {
           src={liked ? LikeFilledIcon : LikeIcon}
           alt="Like"
         />
-        {!liked && <span>Like</span>}
+        {liked ? <span>Liked</span> : <span>Like</span>}
       </button>
       {/* Comment Button */}
       <button className="icon-btn space-x-2 px-6 py-3 text-xs lg:px-12 lg:text-sm">
