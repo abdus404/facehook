@@ -43,7 +43,9 @@ const postReducer = (state, action) => {
       return {
         ...state,
         loading: false,
-        user: action.data,
+        posts: state.posts.map((post) =>
+          post.id === action.data.id ? action.data : post
+        ),
       };
     }
 

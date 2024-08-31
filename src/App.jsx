@@ -1,4 +1,5 @@
 import { Route, Routes } from "react-router-dom";
+import useAuth from "./hooks/useAuth";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import NotfoundPage from "./pages/NotfoundPage";
@@ -7,6 +8,9 @@ import RegistrationPage from "./pages/RegistrationPage";
 import PrivateRoute from "./routes/PrivateRoute";
 
 function App() {
+  const { auth } = useAuth();
+  console.log(auth);
+
   return (
     <>
       <Routes>

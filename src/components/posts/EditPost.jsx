@@ -8,11 +8,14 @@ import { usePost } from "../../hooks/usePost";
 import { useProfile } from "../../hooks/useProfile";
 import Field from "../common/Field";
 
-export default function PostEntry({ onCreate }) {
+export default function EditPost({ post, onEdit }) {
   const { auth } = useAuth();
-  const { dispatch } = usePost();
+  const { state, dispatch } = usePost();
   const { api } = useAxios();
   const { state: profile } = useProfile();
+
+  const postToEdit = state?.posts?.find((p) => post?.id === p?.id);
+  console.log(postToEdit);
 
   const user = profile?.user ?? auth?.user;
 
@@ -33,6 +36,7 @@ export default function PostEntry({ onCreate }) {
 
   // Updated submit function to handle form data including the file
   const handlePostSubmit = async (data) => {
+    console.log(data);
     dispatch({ type: actions.post.DATA_FETCHING });
 
     const formData = new FormData();
@@ -42,8 +46,8 @@ export default function PostEntry({ onCreate }) {
     }
 
     try {
-      const response = await api.post(
-        `${import.meta.env.VITE_SERVER_BASE_URL}/posts`,
+      const response = await api.patch(
+        `${import.meta.env.VITE_SERVER_BASE_URL}/posts/${post?.id}`,
         formData,
         {
           headers: {
@@ -54,11 +58,11 @@ export default function PostEntry({ onCreate }) {
 
       if (response.status === 200) {
         dispatch({
-          type: actions.post.DATA_CREATED,
+          type: actions.post.DATA_EDITED,
           data: response.data,
         });
         // Close this UI
-        onCreate();
+        onEdit();
       }
     } catch (error) {
       console.error(error);
@@ -72,7 +76,7 @@ export default function PostEntry({ onCreate }) {
   return (
     <div className="card relative">
       <h6 className="mb-3 text-center text-lg font-bold lg:text-xl">
-        Create Post
+        Edit Post
       </h6>
       <form onSubmit={handleSubmit(handlePostSubmit)}>
         <div className="mb-3 flex items-center justify-between gap-2 lg:mb-6 lg:gap-4">
@@ -112,7 +116,7 @@ export default function PostEntry({ onCreate }) {
             })}
             name="content"
             id="content"
-            placeholder="Share your thoughts..."
+            placeholder={postToEdit.content}
             className="h-[120px] w-full bg-transparent focus:outline-none lg:h-[160px]"
           ></textarea>
         </Field>
